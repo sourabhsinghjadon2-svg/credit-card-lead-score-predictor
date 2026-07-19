@@ -147,16 +147,28 @@ if mode_selector == "👤 Live Single Customer Profiling":
         raw_df = pd.DataFrame(raw_payload)
         pipelined_df = transform_scale_and_align(raw_df)
         
-       # Real-time Scoring
+# Real-time Scoring
         prediction_flag = ai_engine.predict(pipelined_df)[0]
         confidence_metric = ai_engine.predict_proba(pipelined_df)[0][1]
         
         # 🛡️ HARD BUSINESS SAFETY LAYER (Foolproof Boundary Fix)
-        # Agar balance bank ki policy se kam (e.g., ₹5000) hai, toh AI ko bypass karke automatic low priority karo
         if avg_balance < 5000:
             prediction_flag = 0
             # Ek realistic low probability score generate karo (e.g., 12% to 24%)
             confidence_metric = float(np.random.uniform(0.12, 0.24))
+            
+        # 👵 AGE-BASED DECAY LAYER (70+ Age Penalty Logic)
+        if customer_age > 70:
+            # 70 ke upar jitne saal badhenge, score dhire-dhire down hota jaaega
+            age_excess = customer_age - 70
+            penalty_multiplier = max(0.0, 1.0 - (age_excess * 0.04))
+            confidence_metric = float(confidence_metric * penalty_multiplier)
+            
+            # 85 boundary touch hote hi compulsory score below 50% aur lower conversion list check active
+            if customer_age >= 85 or confidence_metric < 0.50:
+                prediction_flag = 0
+                if confidence_metric >= 0.50:
+                    confidence_metric = 0.49  # Forcefully safety cap below 50%
         
         st.markdown("---")
         st.markdown("### 🎯 Real-Time Target Acquisition Output")
