@@ -113,7 +113,7 @@ if mode_selector == "👤 Live Single Customer Profiling":
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        customer_age = st.slider("Target Age Spectrum", 18, 95, 38)
+        customer_age = st.slider("Target Age Spectrum", 18, 95, 42)
         customer_gender = st.selectbox("Identified Gender", ["Male", "Female"])
         # 🎯 SMART BYPASS: Geographical Region Code selectbox has been completely removed from UI layout
     with col2:
@@ -128,13 +128,13 @@ if mode_selector == "👤 Live Single Customer Profiling":
         }
         
         # Display the full descriptive labels to the user in the UI
-        selected_channel_label = st.selectbox("Lead Sourcing Channel", list(channel_mapping.keys()))
+        selected_channel_label = st.selectbox("Lead Sourcing Channel", list(channel_mapping.keys()), index=2)
         
         # Extract and pass only the core structural code ("X1", "X2", etc.) to the background model
         acquisition_channel = channel_mapping[selected_channel_label]
-        vintage_months = st.number_input("Account Longevity/Vintage (Months)", min_value=0, max_value=240, value=24)
+        vintage_months = st.number_input("Account Longevity/Vintage (Months)", min_value=0, max_value=240, value=60)
     with col3:
-        credit_history = st.selectbox("Prior Active Credit History Status", ["No", "Yes"]) # "Unknown" removed
+        credit_history = st.selectbox("Prior Active Credit History Status", ["Yes", "No"]) # "Unknown" removed
         avg_balance = st.number_input("Average Monthly Account Liquidity (INR)", min_value=0, value=350000)
         active_status = st.selectbox("Recent Engagement Flag (Last 90 Days)", ["Yes", "No"])
 
